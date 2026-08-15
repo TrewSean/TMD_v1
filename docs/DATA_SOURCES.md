@@ -9,7 +9,7 @@ delayed / unofficial. Verified = live dry-run succeeded from a real environment.
 | `rba_f2` | RBA, table F2 CSV | ACGB 2/3/5/10y, 10y indexed | daily ~16:30 Syd | primary | 15 Aug 2026 |
 | `ust_par` | US Treasury, daily par yield CSV | 1m to 30y par curve (13 tenors) | daily ~15:30 NY | primary | 15 Aug 2026 |
 | `nyfed_rates` | NY Fed markets API (JSON) | SOFR, EFFR (+ target range in meta) | daily 08:00 NY for T-1 | primary | 15 Aug 2026 |
-| `yfinance` | Yahoo Finance via yfinance | ASX200, SPX, NDX, DJIA, VIX, AUDUSD, DXY, WTI, Brent, gold, copper, CBOE 5/10/30y | 10-20 min delayed | aggregator | pending (blocked from build sandbox) |
+| `yfinance` | Yahoo Finance via yfinance | ASX200, SPX, NDX, DJIA, VIX, AUDUSD, DXY, WTI, Brent, gold, copper, CBOE 5/10/30y | 10-20 min delayed | aggregator | 15 Aug 2026 (from GitHub Actions) |
 
 ## Planned (see PLAN.md)
 
@@ -29,5 +29,5 @@ delayed / unofficial. Verified = live dry-run succeeded from a real environment.
 - Treasury CSV is per calendar year; adapter fetches current and previous year when the
   lookback crosses 1 Jan.
 - NY Fed rates are for the *previous* business day; `ts` is set to that day 17:00 NY.
-- yfinance: `fast_info` has no quote timestamp; adapter uses the last 1-minute bar's
-  timestamp when available, else `as_of`.
+- yfinance: one batched `yf.download(period="1d", interval="5m")`; `ts` is the last bar's
+  timestamp. Per-ticker `fast_info` calls returned nothing from GitHub runners; stay batched.

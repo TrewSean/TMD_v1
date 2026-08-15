@@ -18,7 +18,7 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
 - [x] Runner with validation, per-adapter error isolation, `ingest_runs` logging
 - [x] CLI: `tmd run|migrate|catalog|health`
 - [x] Adapters live-verified: `rba_f1`, `rba_f2`, `ust_par`, `nyfed_rates`
-- [x] Adapter written, not yet live-verified (Yahoo blocked from build sandbox): `yfinance`
+- [x] Adapter live-verified from GitHub Actions (15 Aug): `yfinance`
 - [x] `calcs/curves.py` as the calc template, with tests
 - [x] CI workflow (ruff, pytest, migration smoke on Postgres service)
 - [x] Scheduled workflows: `ingest-fixings`, `ingest-intraday`, `migrate`
@@ -27,11 +27,11 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
 ## Phase 1, data layer complete on free sources
 
 ### 1a. Wire production
-- [ ] Sean adds `DATABASE_URL` (Supabase session pooler URI) to GitHub Actions secrets
-- [ ] Run `migrate` workflow by hand; confirm tables exist in Supabase Table Editor
-- [ ] Run `ingest-fixings` by hand; confirm rows in `latest_observations`
-- [ ] Run `ingest-intraday` by hand; confirm `yfinance` adapter works from Actions.
-      If Yahoo blocks GitHub runners, fall back plan: move intraday to the worker (1d).
+- [x] Sean adds `DATABASE_URL` (Supabase session pooler URI) to GitHub Actions secrets (15 Aug)
+- [x] Run `migrate` workflow by hand; confirm tables exist in Supabase Table Editor (15 Aug)
+- [x] Run `ingest-fixings` by hand; confirm rows in `latest_observations` (15 Aug, 776 rows)
+- [x] Run `ingest-intraday` by hand; `yfinance` works from Actions after switching to a
+      single batched download (per-ticker `fast_info` calls returned nothing). 14/14 tickers.
 - [ ] Decide: make repo public (unlimited Actions minutes) or keep private and reduce
       intraday cadence. Reason: private repos get 2,000 min/month; current schedule ~1,500.
 
@@ -83,6 +83,6 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
 - [ ] Personal layer as a private route (calendar, inbox) if still wanted
 
 ## Open questions
-- Yahoo Finance reachability from GitHub Actions runners is unverified (blocked from the
-  build sandbox on 15 Aug 2026). First `ingest-intraday` run will tell.
+- (resolved 15 Aug) Yahoo works from GitHub runners with batched `yf.download`; per-ticker
+  `fast_info` returned nothing. Keep the adapter batched.
 - ASX Rate Tracker: is there a stable machine-readable endpoint, or only the HTML page?
