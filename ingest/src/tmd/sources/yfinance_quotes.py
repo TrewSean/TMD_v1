@@ -75,40 +75,48 @@ class YFinanceQuotes(SourceAdapter):
             closes = df["Close"] if "Close" in df else df
             return observations_from_frame(closes, ref_to_id)
 
-        # Snapshot mode: last price + its timestamp per ticker.
+        # Snapshot mode: one batched intraday download, take the last bar per ticker.
+        # Batched is friendlier to Yahoo's rate limits than per-ticker calls, and yfinance
+        # prints its own per-ticker errors to stderr so the Actions log shows the cause.
+        df = yf.download(
+            tickers,
+            period="1d",
+            interval="5m",
+            progress=False,
+            auto_adjust=False,
+            group_by="column",
+            threads=False,
+        )
+        if df is None or df.empty:
+            raise AdapterError(
+                "yfinance returned an empty frame for the snapshot download; "
+                "Yahoo may be blocking this network (see stderr above)"
+            )
+        closes = df["Close"] if "Close" in df else df
         out: list[Observation] = []
-        fetched = now
         failures: list[str] = []
         for t in tickers:
-            try:
-                fi = yf.Ticker(t).fast_info
-                price = (
-                    fi.get("last_price") if hasattr(fi, "get") else getattr(fi, "last_price", None)
-                )
-                if price is None:
-                    failures.append(t)
-                    continue
-                # fast_info has no reliable quote timestamp; use 1m history's last bar if present.
-                hist = yf.Ticker(t).history(period="1d", interval="1m")
-                if hist is not None and not hist.empty:
-                    ts = hist.index[-1].to_pydatetime()
-                    if ts.tzinfo is None:
-                        ts = ts.replace(tzinfo=UTC)
-                    price = float(hist["Close"].iloc[-1])
-                else:
-                    ts = fetched
-                out.append(
-                    Observation(
-                        series_id=ref_to_id[t],
-                        ts=ts,
-                        value=Decimal(str(float(price))),
-                        as_of=fetched,
-                        source_ref=t,
-                    )
-                )
-            except Exception as exc:  # noqa: BLE001
-                log.warning("yfinance %s failed: %s", t, exc)
+            if t not in closes.columns:
                 failures.append(t)
+                continue
+            col = closes[t].dropna()
+            if col.empty:
+                failures.append(t)
+                continue
+            ts = col.index[-1].to_pydatetime()
+            if ts.tzinfo is None:
+                ts = ts.replace(tzinfo=UTC)
+            out.append(
+                Observation(
+                    series_id=ref_to_id[t],
+                    ts=ts,
+                    value=Decimal(str(float(col.iloc[-1]))),
+                    as_of=now,
+                    source_ref=t,
+                )
+            )
+        if failures:
+            log.warning("yfinance: no data for %s", failures)
         if not out:
             raise AdapterError(f"yfinance: every ticker failed ({failures})")
         return out
