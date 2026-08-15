@@ -74,7 +74,7 @@ def run_many(names: list[str], store: Store) -> list[IngestResult]:
 
 # Named groups so schedules can say "run the daily fixings" without listing adapters.
 GROUPS: dict[str, list[str]] = {
-    "fixings": ["rba_f1", "rba_f2", "ust_par", "nyfed_rates"],
+    "fixings": ["rba_f1", "rba_f2", "ust_par", "nyfed_rates", "asx_rate_tracker"],
     "intraday": ["yfinance"],
-    "all": ["rba_f1", "rba_f2", "ust_par", "nyfed_rates", "yfinance"],
+    "all": ["rba_f1", "rba_f2", "ust_par", "nyfed_rates", "asx_rate_tracker", "yfinance"],
 }

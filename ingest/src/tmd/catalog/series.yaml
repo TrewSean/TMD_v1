@@ -145,6 +145,72 @@ series:
     source: rba_f2
     source_ref: FCMYGBAGID
 
+  # ---------------------------------------------------------------- Australia, ASX 30-day interbank cash rate futures (RBA Rate Tracker)
+  # The implied yield strip is stored by CONTRACT POSITION, not calendar month: series
+  # ids are permanent and the listed contracts roll forward every month. m1 is the front
+  # month. The contract each observation actually refers to is in meta.expiry_month.
+  - {id: au.asx.ib.implied.m1,  name: "ASX IB implied yield, contract 1",  unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m1,  tags: [implied_path, headline]}
+  - {id: au.asx.ib.implied.m2,  name: "ASX IB implied yield, contract 2",  unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m2,  tags: [implied_path]}
+  - {id: au.asx.ib.implied.m3,  name: "ASX IB implied yield, contract 3",  unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m3,  tags: [implied_path]}
+  - {id: au.asx.ib.implied.m4,  name: "ASX IB implied yield, contract 4",  unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m4,  tags: [implied_path]}
+  - {id: au.asx.ib.implied.m5,  name: "ASX IB implied yield, contract 5",  unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m5,  tags: [implied_path]}
+  - {id: au.asx.ib.implied.m6,  name: "ASX IB implied yield, contract 6",  unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m6,  tags: [implied_path]}
+  - {id: au.asx.ib.implied.m7,  name: "ASX IB implied yield, contract 7",  unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m7,  tags: [implied_path]}
+  - {id: au.asx.ib.implied.m8,  name: "ASX IB implied yield, contract 8",  unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m8,  tags: [implied_path]}
+  - {id: au.asx.ib.implied.m9,  name: "ASX IB implied yield, contract 9",  unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m9,  tags: [implied_path]}
+  - {id: au.asx.ib.implied.m10, name: "ASX IB implied yield, contract 10", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m10, tags: [implied_path]}
+  - {id: au.asx.ib.implied.m11, name: "ASX IB implied yield, contract 11", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m11, tags: [implied_path]}
+  - {id: au.asx.ib.implied.m12, name: "ASX IB implied yield, contract 12", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m12, tags: [implied_path]}
+  - {id: au.asx.ib.implied.m13, name: "ASX IB implied yield, contract 13", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m13, tags: [implied_path]}
+  - {id: au.asx.ib.implied.m14, name: "ASX IB implied yield, contract 14", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m14, tags: [implied_path]}
+  - {id: au.asx.ib.implied.m15, name: "ASX IB implied yield, contract 15", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m15, tags: [implied_path]}
+  - {id: au.asx.ib.implied.m16, name: "ASX IB implied yield, contract 16", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m16, tags: [implied_path]}
+  - {id: au.asx.ib.implied.m17, name: "ASX IB implied yield, contract 17", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m17, tags: [implied_path]}
+  - {id: au.asx.ib.implied.m18, name: "ASX IB implied yield, contract 18", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: asx_rate_tracker, source_ref: m18, tags: [implied_path]}
+  - id: au.asx.ib.front_settlement
+    name: ASX IB front contract settlement price
+    unit: price
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: asx_rate_tracker
+    source_ref: Crnt_Dy_Stlmnt_Price
+    description: Daily settlement price of the front 30-day interbank cash rate future (100 minus the implied rate)
+  - id: au.asx.ib.expected_cash_rate
+    name: Cash rate implied for after the next RBA meeting
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: asx_rate_tracker
+    source_ref: Ftre_Cash_Rate
+    description: ASX's published Ftre_Cash_Rate from the RBA Rate Tracker; meta carries the meeting date it refers to
+    tags: [policy, headline]
+  - id: au.asx.ib.expected_change
+    name: Cash rate change implied for the next RBA meeting
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: asx_rate_tracker
+    source_ref: Ftre_Cash_Rate_Change
+    description: ASX's published Ftre_Cash_Rate_Change, in percentage points (-0.25 = a 25bp cut)
+    tags: [policy]
+  - id: au.asx.ib.prob_change
+    name: Implied probability of an RBA move at the next meeting
+    unit: pct_prob
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: asx_rate_tracker
+    source_ref: Prob_Change
+    description: ASX's published Prob_Change, 0-100; meta.prob_no_change carries its complement
+    tags: [policy]
+
   # ---------------------------------------------------------------- United States, Treasury par yield curve (daily)
   - {id: us.ust.par.1m,  name: UST 1m par yield,  unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "1 Mo",  tags: [curve]}
   - {id: us.ust.par.2m,  name: UST 2m par yield,  unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "2 Mo",  tags: [curve]}

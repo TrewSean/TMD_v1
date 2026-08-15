@@ -1,0 +1,81 @@
+{
+  "Ftre_Cash_Rate": 4.1,
+  "Ftre_Cash_Rate_Change": -0.25,
+  "days": [
+    {
+      "Stlmnt_Dt": "2026-08-13",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-08-12",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-08-11",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-08-10",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-08-07",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-08-06",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-08-05",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-08-04",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-08-03",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-07-31",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-07-30",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-07-29",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-07-28",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-07-27",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    },
+    {
+      "Stlmnt_Dt": "2026-07-24",
+      "Prob_No_Change": 100,
+      "Prob_Change": 0
+    }
+  ]
+}
