@@ -50,11 +50,14 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
 - [ ] `rba_calendar`, `fomc_calendar`: meeting dates (needed by implied path calc)
 
 ### 1c. Calcs
-- [ ] `calcs/implied_path.py`: meeting-by-meeting implied policy rate from a futures
-      strip (monthly-average contracts, least-squares fit across meeting boundaries).
-      Method and error bounds documented; tested with a hand-built strip.
-- [ ] `calcs/changes.py`: 1d / 1w / 1m / YTD / 1y changes for any series (pure)
-- [ ] `calcs/curves.py`: interpolation for missing tenors, flagged as interpolated
+- [x] `calcs/implied_path.py`: meeting-by-meeting implied policy rate from a futures
+      strip (monthly-average contracts, ridge least-squares across meeting boundaries,
+      weak-node flag, realised front-month days). Exact on synthetic strips. (15 Aug)
+- [x] `calcs/changes.py`: 1d / 1w / 1m / 3m / 1y / YTD changes, bp for rates, % otherwise (15 Aug)
+- [x] `calcs/curves.py`: `interpolate_missing` linear-in-years, flagged, no extrapolation (15 Aug)
+- [ ] Wire calcs into a scheduled job that writes derived series (e.g. `au.rba.implied.<meeting>`,
+      `us.fed.implied.<meeting>`, `*.chg_1d`) once `asx_rate_tracker`, `fed_funds_futures`,
+      `rba_calendar` and `fomc_calendar` adapters exist (depends on 1b).
 
 ### 1d. Streaming worker (Alpaca)
 - [ ] `worker/`: Python process using `alpaca-py` websocket (IEX feed) for a configured
