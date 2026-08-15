@@ -87,7 +87,10 @@ settlement, contract specs), cite the spec in the docstring.
 
 ## Things that look tempting but are wrong here
 
-- Scraping HTML pages when a CSV/JSON exists. Find the file.
+- Scraping HTML pages when a CSV/JSON exists. Find the file. Exception: small, slow-moving
+  reference data that publishers only put in HTML (central bank meeting dates, release
+  calendars) goes into a versioned YAML config under `ingest/src/tmd/catalog/` (e.g.
+  `meetings.yaml`), reviewed once a year. That is "config is data", not scraping.
 - "Just hard-coding" a ticker list in Python. It goes in `series.yaml`.
 - Adding pandas everywhere. Parsers should be plain `csv`/`json`; pandas only where a
   library (yfinance) hands you a frame.

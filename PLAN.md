@@ -56,27 +56,25 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
       machine-readable; otherwise `[!]` blocked pending IBKR (Phase 4)
 - [ ] `abs_calendar`, `bls_bea_calendar`: release calendars into a `calendar_events`
       table (new migration `0003_calendar.sql`)
-- [!] `rba_calendar`: BLOCKED, HTML only. Meeting dates live in a `<table>` on
-      `rba.gov.au/schedules-events/board-meeting-schedules.html` (and the yearly calendar
-      page). No CSV, JSON or iCal anywhere on rba.gov.au; the RSS feeds carry past media
-      releases, not the forward schedule. Not scraping the table.
-- [!] `fomc_calendar`: BLOCKED, HTML only. `federalreserve.gov/monetarypolicy/fomccalendars.htm`
-      has no CSV/JSON/iCal counterpart; every feed under `/feeds/` is past press releases,
-      and the NY Fed markets API (already used by `nyfed_rates`) has no FOMC endpoint.
-- [ ] Revisit the two blocked calendars once `fred` lands: the FRED releases API
-      (`fred/release/dates`) is machine-readable and would cover FOMC dates with the same
-      key. Reason: it is the only official-adjacent structured source found.
-- [ ] Decide how meeting dates get stored at all before rebuilding either calendar
-      adapter. Reason: `validate.py` rejects any observation more than 2 days in the
-      future, so a *scheduled* date cannot be an Observation; it needs the
-      `calendar_events` table and a `fetch_events()` hook on `SourceAdapter`.
+- [ ] `rba_calendar`, `fomc_calendar`: meeting dates as versioned config
+      `catalog/meetings.yaml` (decision date, effective date, country), loader + tests,
+      reviewed yearly. Reason: both banks publish dates only as HTML (RBA board schedule
+      page, federalreserve.gov FOMC calendar; no CSV/JSON/iCal, RSS is past releases only,
+      NY Fed API has no FOMC endpoint). Scraping is wrong, config is right. Unblocks
+      `calcs/implied_path.py` wiring. Note: `validate.py` rejects observations >2 days in
+      the future, so scheduled dates are config/`calendar_events`, never Observations.
+- [ ] Optional cross-check later: FRED `fred/release/dates` API can confirm FOMC dates once
+      the `fred` adapter exists.
 
 ### 1c. Calcs
-- [ ] `calcs/implied_path.py`: meeting-by-meeting implied policy rate from a futures
-      strip (monthly-average contracts, least-squares fit across meeting boundaries).
-      Method and error bounds documented; tested with a hand-built strip.
-- [ ] `calcs/changes.py`: 1d / 1w / 1m / YTD / 1y changes for any series (pure)
-- [ ] `calcs/curves.py`: interpolation for missing tenors, flagged as interpolated
+- [x] `calcs/implied_path.py`: meeting-by-meeting implied policy rate from a futures
+      strip (monthly-average contracts, ridge least-squares across meeting boundaries,
+      weak-node flag, realised front-month days). Exact on synthetic strips. (15 Aug)
+- [x] `calcs/changes.py`: 1d / 1w / 1m / 3m / 1y / YTD changes, bp for rates, % otherwise (15 Aug)
+- [x] `calcs/curves.py`: `interpolate_missing` linear-in-years, flagged, no extrapolation (15 Aug)
+- [ ] Wire calcs into a scheduled job that writes derived series (e.g. `au.rba.implied.<meeting>`,
+      `us.fed.implied.<meeting>`, `*.chg_1d`) once `asx_rate_tracker`, `fed_funds_futures`,
+      `rba_calendar` and `fomc_calendar` adapters exist (depends on 1b).
 
 ### 1d. Streaming worker (Alpaca)
 - [ ] `worker/`: Python process using `alpaca-py` websocket (IEX feed) for a configured
