@@ -3,7 +3,8 @@
 # Rules
 #  * id is permanent. Never rename; deactivate (active: false) and add a new one.
 #  * id format: <country>.<publisher_or_market>.<thing>[.<tenor>]  all lower snake.
-#  * source must match a SourceAdapter.name in tmd/sources.
+#  * source must match a SourceAdapter.name in tmd/sources, OR a derivation name in
+#    tmd/jobs/derive.py (DERIVED_SOURCES) for series that are computed, not fetched.
 #  * source_ref is whatever that adapter needs to find the value (ticker, column).
 #  * tier is about the SOURCE (primary publisher / licensed feed / aggregator),
 #    not about how much you like the number.
@@ -247,6 +248,63 @@ series:
     source: nyfed_rates
     source_ref: effr
     tags: [policy, headline]
+
+  # ---------------------------------------------------------------- United States, CME 30-day fed funds futures (ZQ) via Yahoo
+  # Prices, not implied rates: 100 - price is arithmetic, and arithmetic lives in calcs/.
+  # Keyed by contract POSITION like the ASX strip above, because contracts roll monthly.
+  # meta.contract_ym / meta.symbol record which contract each number actually is.
+  - {id: us.cme.zq.m1,  name: "ZQ fed funds future, contract 1",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m1,  tags: [implied_path, headline]}
+  - {id: us.cme.zq.m2,  name: "ZQ fed funds future, contract 2",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m2,  tags: [implied_path]}
+  - {id: us.cme.zq.m3,  name: "ZQ fed funds future, contract 3",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m3,  tags: [implied_path]}
+  - {id: us.cme.zq.m4,  name: "ZQ fed funds future, contract 4",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m4,  tags: [implied_path]}
+  - {id: us.cme.zq.m5,  name: "ZQ fed funds future, contract 5",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m5,  tags: [implied_path]}
+  - {id: us.cme.zq.m6,  name: "ZQ fed funds future, contract 6",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m6,  tags: [implied_path]}
+  - {id: us.cme.zq.m7,  name: "ZQ fed funds future, contract 7",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m7,  tags: [implied_path]}
+  - {id: us.cme.zq.m8,  name: "ZQ fed funds future, contract 8",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m8,  tags: [implied_path]}
+  - {id: us.cme.zq.m9,  name: "ZQ fed funds future, contract 9",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m9,  tags: [implied_path]}
+  - {id: us.cme.zq.m10, name: "ZQ fed funds future, contract 10", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m10, tags: [implied_path]}
+  - {id: us.cme.zq.m11, name: "ZQ fed funds future, contract 11", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m11, tags: [implied_path]}
+  - {id: us.cme.zq.m12, name: "ZQ fed funds future, contract 12", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m12, tags: [implied_path]}
+  - {id: us.cme.zq.m13, name: "ZQ fed funds future, contract 13", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m13, tags: [implied_path]}
+  - {id: us.cme.zq.m14, name: "ZQ fed funds future, contract 14", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m14, tags: [implied_path]}
+  - {id: us.cme.zq.m15, name: "ZQ fed funds future, contract 15", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m15, tags: [implied_path]}
+  - {id: us.cme.zq.m16, name: "ZQ fed funds future, contract 16", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m16, tags: [implied_path]}
+  - {id: us.cme.zq.m17, name: "ZQ fed funds future, contract 17", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m17, tags: [implied_path]}
+  - {id: us.cme.zq.m18, name: "ZQ fed funds future, contract 18", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m18, tags: [implied_path]}
+
+
+  # ---------------------------------------------------------------- DERIVED: implied policy paths (tmd derive)
+  # Not fetched. Computed by tmd/jobs/derive.py from the strips above + catalog/meetings.yaml
+  # via calcs/implied_path.py. Keyed by MEETING POSITION: n1 = after the next meeting.
+  # meta carries meeting_date, step_bp, cumulative_moves, weight, weak and fit_rms_bp.
+  # Tier follows the weakest input: RBA path from the ASX strip (primary), Fed path from
+  # ZQ via Yahoo (aggregator).
+
+  - {id: au.rba.implied.n1, name: "RBA implied cash rate, meeting 1", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: derive_rba, source_ref: n1, tags: [derived, implied_path, headline]}
+  - {id: au.rba.implied.n2, name: "RBA implied cash rate, meeting 2", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: derive_rba, source_ref: n2, tags: [derived, implied_path]}
+  - {id: au.rba.implied.n3, name: "RBA implied cash rate, meeting 3", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: derive_rba, source_ref: n3, tags: [derived, implied_path]}
+  - {id: au.rba.implied.n4, name: "RBA implied cash rate, meeting 4", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: derive_rba, source_ref: n4, tags: [derived, implied_path]}
+  - {id: au.rba.implied.n5, name: "RBA implied cash rate, meeting 5", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: derive_rba, source_ref: n5, tags: [derived, implied_path]}
+  - {id: au.rba.implied.n6, name: "RBA implied cash rate, meeting 6", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: derive_rba, source_ref: n6, tags: [derived, implied_path]}
+  - {id: au.rba.implied.n7, name: "RBA implied cash rate, meeting 7", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: derive_rba, source_ref: n7, tags: [derived, implied_path]}
+  - {id: au.rba.implied.n8, name: "RBA implied cash rate, meeting 8", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: derive_rba, source_ref: n8, tags: [derived, implied_path]}
+  - {id: au.rba.implied.n9, name: "RBA implied cash rate, meeting 9", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: derive_rba, source_ref: n9, tags: [derived, implied_path]}
+  - {id: au.rba.implied.n10, name: "RBA implied cash rate, meeting 10", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: derive_rba, source_ref: n10, tags: [derived, implied_path]}
+  - {id: au.rba.implied.n11, name: "RBA implied cash rate, meeting 11", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: derive_rba, source_ref: n11, tags: [derived, implied_path]}
+  - {id: au.rba.implied.n12, name: "RBA implied cash rate, meeting 12", unit: pct, asset_class: rates, country: AU, frequency: daily, tier: primary, source: derive_rba, source_ref: n12, tags: [derived, implied_path]}
+
+  - {id: us.fed.implied.n1, name: "Fed implied funds rate, meeting 1", unit: pct, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: derive_fed, source_ref: n1, tags: [derived, implied_path, headline]}
+  - {id: us.fed.implied.n2, name: "Fed implied funds rate, meeting 2", unit: pct, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: derive_fed, source_ref: n2, tags: [derived, implied_path]}
+  - {id: us.fed.implied.n3, name: "Fed implied funds rate, meeting 3", unit: pct, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: derive_fed, source_ref: n3, tags: [derived, implied_path]}
+  - {id: us.fed.implied.n4, name: "Fed implied funds rate, meeting 4", unit: pct, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: derive_fed, source_ref: n4, tags: [derived, implied_path]}
+  - {id: us.fed.implied.n5, name: "Fed implied funds rate, meeting 5", unit: pct, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: derive_fed, source_ref: n5, tags: [derived, implied_path]}
+  - {id: us.fed.implied.n6, name: "Fed implied funds rate, meeting 6", unit: pct, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: derive_fed, source_ref: n6, tags: [derived, implied_path]}
+  - {id: us.fed.implied.n7, name: "Fed implied funds rate, meeting 7", unit: pct, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: derive_fed, source_ref: n7, tags: [derived, implied_path]}
+  - {id: us.fed.implied.n8, name: "Fed implied funds rate, meeting 8", unit: pct, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: derive_fed, source_ref: n8, tags: [derived, implied_path]}
+  - {id: us.fed.implied.n9, name: "Fed implied funds rate, meeting 9", unit: pct, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: derive_fed, source_ref: n9, tags: [derived, implied_path]}
+  - {id: us.fed.implied.n10, name: "Fed implied funds rate, meeting 10", unit: pct, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: derive_fed, source_ref: n10, tags: [derived, implied_path]}
+  - {id: us.fed.implied.n11, name: "Fed implied funds rate, meeting 11", unit: pct, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: derive_fed, source_ref: n11, tags: [derived, implied_path]}
+  - {id: us.fed.implied.n12, name: "Fed implied funds rate, meeting 12", unit: pct, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: derive_fed, source_ref: n12, tags: [derived, implied_path]}
 
   # ---------------------------------------------------------------- Yahoo Finance (delayed aggregator; equities, FX, commodities, futures)
   # These are Phase 1 tiles. Replace/augment US names with Alpaca (tier feed) later.

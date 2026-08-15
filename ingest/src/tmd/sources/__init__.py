@@ -9,6 +9,7 @@ from __future__ import annotations
 from tmd.core.adapter import SourceAdapter
 from tmd.sources.alpaca import AlpacaSnapshot
 from tmd.sources.asx_rate_tracker import ASXRateTracker
+from tmd.sources.fed_funds_futures import FedFundsFutures
 from tmd.sources.nyfed_rates import NYFedRates
 from tmd.sources.rba_tables import RBAF1, RBAF2
 from tmd.sources.ust_par import USTPar
@@ -21,5 +22,6 @@ REGISTRY: dict[str, type[SourceAdapter]] = {
     NYFedRates.name: NYFedRates,
     YFinanceQuotes.name: YFinanceQuotes,
     ASXRateTracker.name: ASXRateTracker,
+    FedFundsFutures.name: FedFundsFutures,
     AlpacaSnapshot.name: AlpacaSnapshot,
 }

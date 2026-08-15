@@ -11,3 +11,11 @@ def fixture_text():
         return (FIXTURES / name).read_text(encoding="utf-8")
 
     return _load
+
+
+@pytest.fixture
+def fixture_path():
+    def _path(name: str) -> Path:
+        return FIXTURES / name
+
+    return _path

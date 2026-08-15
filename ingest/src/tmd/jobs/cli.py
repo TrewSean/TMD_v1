@@ -1,6 +1,7 @@
 """Command line entry point: `tmd ...`
 
 tmd run <adapter|group> [--dry-run]     run one adapter or a named group
+tmd derive [--dry-run]                  compute derived series from what is stored
 tmd migrate                             apply pending SQL migrations
 tmd catalog                             print the series catalogue
 tmd health                              last run per adapter
@@ -15,7 +16,7 @@ import typer
 
 from tmd import catalog
 from tmd.config import settings
-from tmd.core.store import make_store
+from tmd.core.store import Store, make_store
 from tmd.jobs import migrate as _migrate
 from tmd.jobs.runner import GROUPS, run_many
 from tmd.sources import REGISTRY
@@ -59,6 +60,46 @@ def run(
             typer.echo(f"    note: {n[:200]}")
     if bad and len(bad) == len(results):
         raise typer.Exit(1)  # only fail the job if *everything* failed
+
+
+@app.command()
+def derive(
+    dry_run: bool = typer.Option(False, "--dry-run", help="compute and print, do not write"),
+):
+    """Compute implied policy paths from strips already in the store.
+
+    Reads from the database either way, so DATABASE_URL is required: unlike `run`, this
+    command has no external source to fall back on. `--dry-run` reads the real data and
+    throws the answer away.
+    """
+    if not settings.database_url:
+        typer.echo("DATABASE_URL not set; derive reads the stored strips")
+        raise typer.Exit(2)
+    from tmd.core.store import MemoryStore, PostgresStore
+    from tmd.jobs.derive import run_all
+
+    source = PostgresStore(settings.database_url)
+    sink: Store = MemoryStore() if (dry_run or settings.dry_run) else source
+    results = run_all(source, sink)
+
+    if isinstance(sink, MemoryStore):
+        for (sid, ts), o in sorted(sink.obs.items(), key=lambda kv: (kv[0][0], kv[0][1])):
+            flag = " WEAK" if o.meta.get("weak") == "true" else ""
+            typer.echo(
+                f"{sid:24s} {ts:%Y-%m-%d}  {o.value:>6}  "
+                f"{o.meta.get('meeting_date', ''):10s} "
+                f"step={o.meta.get('step_bp', ''):>6}bp "
+                f"cum={o.meta.get('change_from_current_bp', ''):>6}bp{flag}"
+            )
+    for r in results:
+        typer.echo(
+            f"{r.adapter:12s} {r.status:8s} nodes={r.rows_fetched} "
+            f"written={r.rows_written} {r.error or ''}"
+        )
+        for n in r.notes[:5]:
+            typer.echo(f"    note: {n[:200]}")
+    if all(r.status == "error" for r in results):
+        raise typer.Exit(1)
 
 
 @app.command()

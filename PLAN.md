@@ -50,19 +50,23 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
       so the gap is latency only. Revisit if ASX ever publishes a rates CSV/JSON.
 - [ ] `fred`: FRED API for series without a cleaner primary (e.g. DXY history, breakevens).
       Needs a free API key -> `FRED_API_KEY` secret.
-- [ ] `fed_funds_futures`: CME ZQ strip via yfinance contract symbols (`ZQU26.CBT` ...)
-      with a rolling contract generator; tier aggregator, delayed
+- [x] `fed_funds_futures`: CME ZQ strip via yfinance contract symbols (15 Aug 2026).
+      Rolling generator builds `ZQ<code><yy>.CBT` for 18 months from the current CME
+      session month; 18 series keyed by position with `meta.contract_ym`/`symbol`.
+      Stores PRICES, not implied rates, since `100 - price` is arithmetic and belongs in
+      calcs. Live dry-run: 17/18 ok; Jan-28 is not yet quoted on Yahoo, left as a gap.
 - [ ] `au_bond_futures`: ASX 3yr/10yr bond futures (YT/XT) if any free delayed source is
       machine-readable; otherwise `[!]` blocked pending IBKR (Phase 4)
 - [ ] `abs_calendar`, `bls_bea_calendar`: release calendars into a `calendar_events`
       table (new migration `0003_calendar.sql`)
-- [ ] `rba_calendar`, `fomc_calendar`: meeting dates as versioned config
-      `catalog/meetings.yaml` (decision date, effective date, country), loader + tests,
-      reviewed yearly. Reason: both banks publish dates only as HTML (RBA board schedule
-      page, federalreserve.gov FOMC calendar; no CSV/JSON/iCal, RSS is past releases only,
-      NY Fed API has no FOMC endpoint). Scraping is wrong, config is right. Unblocks
-      `calcs/implied_path.py` wiring. Note: `validate.py` rejects observations >2 days in
-      the future, so scheduled dates are config/`calendar_events`, never Observations.
+- [x] `rba_calendar`, `fomc_calendar`: meeting dates as versioned config
+      `catalog/meetings.yaml` + `catalog/meetings.py` loader (15 Aug 2026). RBA and FOMC
+      decision/effective dates for the rest of 2026 and all of 2027, transcribed from the
+      two published schedules (URLs in the file header). The loader raises `MeetingsError`
+      on out-of-order dates, effective <= decision, duplicates, or a decision on the wrong
+      weekday, so a transcription slip fails CI instead of shifting an implied path.
+      REVIEW YEARLY: extend when the RBA publishes 2028 (mid-2027) and the Fed publishes
+      its 2028 tentative calendar (usually with the June FOMC).
 - [ ] Optional cross-check later: FRED `fred/release/dates` API can confirm FOMC dates once
       the `fred` adapter exists.
 
@@ -72,9 +76,24 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
       weak-node flag, realised front-month days). Exact on synthetic strips. (15 Aug)
 - [x] `calcs/changes.py`: 1d / 1w / 1m / 3m / 1y / YTD changes, bp for rates, % otherwise (15 Aug)
 - [x] `calcs/curves.py`: `interpolate_missing` linear-in-years, flagged, no extrapolation (15 Aug)
-- [ ] Wire calcs into a scheduled job that writes derived series (e.g. `au.rba.implied.<meeting>`,
-      `us.fed.implied.<meeting>`, `*.chg_1d`) once `asx_rate_tracker`, `fed_funds_futures`,
-      `rba_calendar` and `fomc_calendar` adapters exist (depends on 1b).
+- [x] Wire `implied_path` into a job: `tmd derive` + `jobs/derive.py` (15 Aug 2026). Reads
+      the ASX and ZQ strips and the reference rate from the store, plus `meetings.yaml`,
+      and writes `au.rba.implied.n1..n12` (primary) and `us.fed.implied.n1..n12`
+      (aggregator, tier follows the weakest input). Nodes are keyed by MEETING POSITION,
+      not meeting date, so ids stay permanent; the meeting is in meta alongside
+      `fit_rms_bp`, `weak`, `weight`, `step_bp` and `cumulative_moves`. Added as a
+      `derive` step after `ingest` in the `ingest-fixings` workflow.
+      Verified end to end on live data (adapters -> MemoryStore -> derive): RBA 11 nodes,
+      fit RMS 0.28bp; Fed 11 nodes, fit RMS 0.07bp; no weak nodes.
+- [ ] Verify `tmd derive` against the real Postgres store. Reason: it was proved against
+      a MemoryStore filled from live adapters, but no `DATABASE_URL` was reachable from
+      the dev environment, so the psycopg read path is untested. Run the `ingest-fixings`
+      workflow by hand and check `au.rba.implied.n1` in `latest_observations`.
+- [ ] Wire `calcs/changes.py` the same way (`*.chg_1d` and friends). Reason: `tmd derive`
+      currently only computes implied paths; changes are still unused by any job.
+- [ ] Consider a batched `Store.latest_many()`. Reason: `derive` issues one `latest()`
+      query per strip position, ~40 round trips per run, each opening its own connection.
+      Fine once a day, wasteful if derive ever runs per-tick.
 
 ### 1d. Streaming worker (Alpaca)
 - [x] `worker/`: `tmd-worker` process, alpaca-py websocket 1-min bars for the `alpaca`

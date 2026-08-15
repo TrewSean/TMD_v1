@@ -35,3 +35,9 @@ jobs:
       - name: ingest
         env: { DATABASE_URL: "${{ secrets.DATABASE_URL }}" }
         run: python -m tmd.jobs.cli run "${{ github.event.inputs.target || 'fixings' }}"
+      # Derived series read what ingest just wrote, so this must come after it. It is a
+      # separate step so a solver failure is visible on its own rather than buried in the
+      # ingest log, and `run` having already committed its rows.
+      - name: derive
+        env: { DATABASE_URL: "${{ secrets.DATABASE_URL }}" }
+        run: python -m tmd.jobs.cli derive
