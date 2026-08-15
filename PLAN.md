@@ -110,18 +110,28 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
       the verification; the REST adapter's first Actions run is the second.
 
 ## Phase 2, web app
-- [ ] `web/`: Next.js (App Router, TypeScript), Supabase JS client, Tailwind
-- [ ] Pages: Overview (headline tiles), Rates desk (AU/US, curves, implied paths),
-      Equities and commodities, Calendar, Sources and health
-- [ ] Every tile shows value, change, `as_of`, tier badge
-- [ ] Realtime subscription for tick/intraday series
-- [ ] Deploy to Netlify (site: tmd-markets); env `NEXT_PUBLIC_SUPABASE_URL`, `..._ANON_KEY`
-- [ ] Charts: history per series with 1m/3m/1y/max ranges
+- [x] `web/`: Next.js 16 (App Router, TypeScript), Supabase JS client, Tailwind 4 (15 Aug)
+- [x] Pages: Overview, Rates desk (AU/US tiles, curves + spreads, implied paths + tables,
+      12m history), Markets, Sources and health (15 Aug). Calendar page waits on Phase 3 data.
+- [x] Every tile shows value, 1d change, `as_of`, tier badge (15 Aug)
+- [ ] Netlify site `tmd-v1` created with env vars; first build failing, log pending
+- [ ] Link Netlify site to GitHub repo (base `web`) so merges to main deploy
+- [ ] Realtime subscription for tick/intraday series (after Fly worker is up)
+- [ ] History charts with 1m/3m/1y/max range control; per-series detail page
+- [ ] Sean's visual review round; mobile layout pass
+- [ ] Ingest: quantise yfinance floats to the instrument's tick (site formats them away)
 
-## Phase 3, hardening
+## Phase 3, hardening and depth
 - [ ] Alerting: failed adapter 2x in a row -> GitHub issue opened automatically
+- [ ] `tmd derive` also writes period changes (calcs/changes.py) as derived series so the
+      site stops computing them per request
 - [ ] Data retention policy for tick data (downsample to 1-min after 30 days)
-- [ ] Backfill job: `tmd backfill <adapter> --since 2015-01-01`
+- [ ] Backfill job: `tmd backfill <adapter> --since 2015-01-01` (RBA F1/F2 and UST files
+      carry full history already)
+- [ ] FedWatch-style probability tree over target-range outcomes per meeting (and the
+      same for the RBA), as a pure calc on top of `implied_path` nodes; site table
+- [ ] `fred` adapter (needs FRED_API_KEY) and `abs/bls/bea` release calendars into a
+      `calendar_events` table (migration 0003) + Calendar page
 
 ## Phase 4, live rates (paid) and personal layer
 - [ ] IBKR gateway on a VPS (ASX24 A$21.50/mo, CME L1 US$1.55/mo) or Databento CME

@@ -1,0 +1,49 @@
+@import "tailwindcss";
+
+/* Design tokens. Light-first, precise, quiet. Data is the only loud thing. */
+:root {
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #898781;
+  --hair: #e1e0d9;
+  --axis: #c3c2b7;
+  --ring: rgba(11, 11, 11, 0.1);
+  --series-1: #2a78d6; /* AU */
+  --series-2: #eb6834; /* US */
+  --series-3: #1baf7a;
+  --up: #006300;
+  --down: #d03b3b;
+  --warn: #fab219;
+  --font-sans: var(--font-inter), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@theme inline {
+  --color-page: var(--page);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-hair: var(--hair);
+  --color-axis: var(--axis);
+  --color-up: var(--up);
+  --color-down: var(--down);
+  --color-s1: var(--series-1);
+  --color-s2: var(--series-2);
+  --font-sans: var(--font-sans);
+}
+
+html { background: var(--page); }
+body {
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-feature-settings: "cv11", "ss01";
+  -webkit-font-smoothing: antialiased;
+}
+
+.num { font-variant-numeric: tabular-nums; }
+.label { font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.hair-b { border-bottom: 1px solid var(--hair); }
+.hair-t { border-top: 1px solid var(--hair); }
+.hair-r { border-right: 1px solid var(--hair); }
