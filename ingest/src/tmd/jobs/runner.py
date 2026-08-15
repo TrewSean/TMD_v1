@@ -76,5 +76,6 @@ def run_many(names: list[str], store: Store) -> list[IngestResult]:
 GROUPS: dict[str, list[str]] = {
     "fixings": ["rba_f1", "rba_f2", "ust_par", "nyfed_rates", "asx_rate_tracker"],
     "intraday": ["yfinance"],
-    "all": ["rba_f1", "rba_f2", "ust_par", "nyfed_rates", "asx_rate_tracker", "yfinance"],
+    "alpaca": ["alpaca"],  # needs ALPACA_* secrets; polling fallback for the streaming worker
+    "all": ["rba_f1", "rba_f2", "ust_par", "nyfed_rates", "asx_rate_tracker", "yfinance", "alpaca"],
 }
