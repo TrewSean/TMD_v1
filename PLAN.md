@@ -47,7 +47,10 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
       machine-readable; otherwise `[!]` blocked pending IBKR (Phase 4)
 - [ ] `abs_calendar`, `bls_bea_calendar`: release calendars into a `calendar_events`
       table (new migration `0003_calendar.sql`)
-- [ ] `rba_calendar`, `fomc_calendar`: meeting dates (needed by implied path calc)
+- [ ] `rba_calendar`, `fomc_calendar`: meeting dates as versioned config
+      `catalog/meetings.yaml` (decision date, effective date, country), loader + tests,
+      reviewed yearly. Reason: both banks publish dates only as HTML; scraping is wrong,
+      config is right. Unblocks `calcs/implied_path.py` wiring.
 
 ### 1c. Calcs
 - [x] `calcs/implied_path.py`: meeting-by-meeting implied policy rate from a futures
