@@ -102,24 +102,25 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
 - [x] `alpaca` REST adapter in ingest as polling fallback (group `alpaca`; intraday
       workflow runs it only when `ALPACA_API_KEY` secret exists). (15 Aug)
 - [x] Dockerfile, `fly.toml`, `railway.json`, README with deploy steps. (15 Aug)
-- [ ] Sean: create Fly.io (or Railway) account, set `DATABASE_URL`, `ALPACA_API_KEY`,
-      `ALPACA_API_SECRET` there, deploy; confirm `alpaca_stream` heartbeats in `adapter_health`.
-- [ ] Sean: add `ALPACA_API_KEY` / `ALPACA_API_SECRET` to GitHub Actions secrets so the
-      polling fallback runs. Optional repo variable `ALPACA_FEED` (iex | delayed_sip).
-- [ ] Not live-verified from the build sandbox (no keys there by design). First deploy is
-      the verification; the REST adapter's first Actions run is the second.
+- [x] Fly.io app `tmd-worker` deployed (fly.toml at repo root); `alpaca_stream` heartbeat
+      confirmed in `adapter_health` (15 Aug)
+- [x] Alpaca secrets in GitHub Actions; polling fallback verified 15/15 (15 Aug)
+
 
 ## Phase 2, web app
 - [x] `web/`: Next.js 16 (App Router, TypeScript), Supabase JS client, Tailwind 4 (15 Aug)
 - [x] Pages: Overview, Rates desk (AU/US tiles, curves + spreads, implied paths + tables,
       12m history), Markets, Sources and health (15 Aug). Calendar page waits on Phase 3 data.
 - [x] Every tile shows value, 1d change, `as_of`, tier badge (15 Aug)
-- [ ] Netlify site `tmd-v1` created with env vars; first build failing, log pending
-- [ ] Link Netlify site to GitHub repo (base `web`) so merges to main deploy
+- [x] Netlify site `tmd-v1` live at https://tmd-v1.netlify.app, linked to GitHub `main`,
+      env vars set; every merge to main deploys (15 Aug)
 - [ ] Realtime subscription for tick/intraday series (after Fly worker is up)
 - [ ] History charts with 1m/3m/1y/max range control; per-series detail page
 - [ ] Sean's visual review round; mobile layout pass
 - [ ] Ingest: quantise yfinance floats to the instrument's tick (site formats them away)
+
+- [ ] CI: add `web/` lint + build job (currently only ingest/worker are gated)
+- [ ] Enable branch protection on `main` (require PR); no more direct pushes, even for config
 
 ## Phase 3, hardening and depth
 - [ ] Alerting: failed adapter 2x in a row -> GitHub issue opened automatically
