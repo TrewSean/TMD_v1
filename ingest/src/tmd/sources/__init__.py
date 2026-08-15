@@ -7,6 +7,7 @@ so forgetting one fails CI rather than failing silently at 3am.
 from __future__ import annotations
 
 from tmd.core.adapter import SourceAdapter
+from tmd.sources.alpaca import AlpacaSnapshot
 from tmd.sources.asx_rate_tracker import ASXRateTracker
 from tmd.sources.fed_funds_futures import FedFundsFutures
 from tmd.sources.nyfed_rates import NYFedRates
@@ -22,4 +23,5 @@ REGISTRY: dict[str, type[SourceAdapter]] = {
     YFinanceQuotes.name: YFinanceQuotes,
     ASXRateTracker.name: ASXRateTracker,
     FedFundsFutures.name: FedFundsFutures,
+    AlpacaSnapshot.name: AlpacaSnapshot,
 }

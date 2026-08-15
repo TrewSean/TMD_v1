@@ -96,12 +96,18 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
       Fine once a day, wasteful if derive ever runs per-tick.
 
 ### 1d. Streaming worker (Alpaca)
-- [ ] `worker/`: Python process using `alpaca-py` websocket (IEX feed) for a configured
-      list of US ETFs/stocks -> writes bars/quotes into `observations` (new series with
-      tier `feed`, frequency `tick`); throttle writes to 1/min per symbol
-- [ ] Dockerfile + deploy to Fly.io or Railway free tier; `ALPACA_API_KEY/SECRET`,
-      `DATABASE_URL` as env vars there
-- [ ] Health row in `ingest_runs` every 5 min so the site can show "stream alive"
+- [x] `worker/`: `tmd-worker` process, alpaca-py websocket 1-min bars for the `alpaca`
+      series (15 US ETFs/stocks, tier feed, frequency tick), batched upserts, reconnect
+      with backoff, heartbeat to `ingest_runs` as `alpaca_stream` every 5 min. (15 Aug)
+- [x] `alpaca` REST adapter in ingest as polling fallback (group `alpaca`; intraday
+      workflow runs it only when `ALPACA_API_KEY` secret exists). (15 Aug)
+- [x] Dockerfile, `fly.toml`, `railway.json`, README with deploy steps. (15 Aug)
+- [ ] Sean: create Fly.io (or Railway) account, set `DATABASE_URL`, `ALPACA_API_KEY`,
+      `ALPACA_API_SECRET` there, deploy; confirm `alpaca_stream` heartbeats in `adapter_health`.
+- [ ] Sean: add `ALPACA_API_KEY` / `ALPACA_API_SECRET` to GitHub Actions secrets so the
+      polling fallback runs. Optional repo variable `ALPACA_FEED` (iex | delayed_sip).
+- [ ] Not live-verified from the build sandbox (no keys there by design). First deploy is
+      the verification; the REST adapter's first Actions run is the second.
 
 ## Phase 2, web app
 - [ ] `web/`: Next.js (App Router, TypeScript), Supabase JS client, Tailwind

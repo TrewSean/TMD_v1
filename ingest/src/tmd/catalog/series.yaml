@@ -322,3 +322,23 @@ series:
   - {id: us.ust.cboe.10y,  name: US 10yr yield (CBOE index), unit: pct, asset_class: rates, country: US, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "^TNX", description: "CBOE 10yr Treasury yield index; intraday proxy for the daily par yield"}
   - {id: us.ust.cboe.5y,   name: US 5yr yield (CBOE index),  unit: pct, asset_class: rates, country: US, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "^FVX"}
   - {id: us.ust.cboe.30y,  name: US 30yr yield (CBOE index), unit: pct, asset_class: rates, country: US, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "^TYX"}
+
+  # ---------------------------------------------------------------- Alpaca (licensed feed; US stocks and ETFs)
+  # Written by both the `alpaca` REST adapter (polling) and worker/ (streaming). frequency
+  # is `tick` because the worker writes 1-minute bars as they arrive. Feed quality depends
+  # on ALPACA_FEED (iex real-time partial tape / delayed_sip 15-min full tape).
+  - {id: us.etf.spy,  name: SPY (S&P 500 ETF),        unit: price, asset_class: equity, country: US, frequency: tick, tier: feed, source: alpaca, source_ref: SPY,  tags: [headline, etf]}
+  - {id: us.etf.qqq,  name: QQQ (Nasdaq 100 ETF),     unit: price, asset_class: equity, country: US, frequency: tick, tier: feed, source: alpaca, source_ref: QQQ,  tags: [etf]}
+  - {id: us.etf.dia,  name: DIA (Dow ETF),            unit: price, asset_class: equity, country: US, frequency: tick, tier: feed, source: alpaca, source_ref: DIA,  tags: [etf]}
+  - {id: us.etf.iwm,  name: IWM (Russell 2000 ETF),   unit: price, asset_class: equity, country: US, frequency: tick, tier: feed, source: alpaca, source_ref: IWM,  tags: [etf]}
+  - {id: us.etf.tlt,  name: TLT (20y+ Treasury ETF),  unit: price, asset_class: rates,  country: US, frequency: tick, tier: feed, source: alpaca, source_ref: TLT,  tags: [etf]}
+  - {id: us.etf.ief,  name: IEF (7-10y Treasury ETF), unit: price, asset_class: rates,  country: US, frequency: tick, tier: feed, source: alpaca, source_ref: IEF,  tags: [etf]}
+  - {id: us.etf.gld,  name: GLD (gold ETF),           unit: price, asset_class: commodity, country: US, frequency: tick, tier: feed, source: alpaca, source_ref: GLD, tags: [etf]}
+  - {id: us.etf.uso,  name: USO (WTI ETF),            unit: price, asset_class: commodity, country: US, frequency: tick, tier: feed, source: alpaca, source_ref: USO, tags: [etf]}
+  - {id: us.stk.nvda, name: Nvidia,                   unit: price, asset_class: equity, country: US, frequency: tick, tier: feed, source: alpaca, source_ref: NVDA, tags: [tech]}
+  - {id: us.stk.aapl, name: Apple,                    unit: price, asset_class: equity, country: US, frequency: tick, tier: feed, source: alpaca, source_ref: AAPL, tags: [tech]}
+  - {id: us.stk.msft, name: Microsoft,                unit: price, asset_class: equity, country: US, frequency: tick, tier: feed, source: alpaca, source_ref: MSFT, tags: [tech]}
+  - {id: us.stk.amd,  name: AMD,                      unit: price, asset_class: equity, country: US, frequency: tick, tier: feed, source: alpaca, source_ref: AMD,  tags: [tech]}
+  - {id: us.stk.tsla, name: Tesla,                    unit: price, asset_class: equity, country: US, frequency: tick, tier: feed, source: alpaca, source_ref: TSLA, tags: [tech]}
+  - {id: us.stk.avgo, name: Broadcom,                 unit: price, asset_class: equity, country: US, frequency: tick, tier: feed, source: alpaca, source_ref: AVGO, tags: [tech]}
+  - {id: us.stk.tsm,  name: TSMC (ADR),               unit: price, asset_class: equity, country: US, frequency: tick, tier: feed, source: alpaca, source_ref: TSM,  tags: [tech]}

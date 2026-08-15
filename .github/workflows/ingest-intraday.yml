@@ -18,6 +18,8 @@ jobs:
   run:
     runs-on: ubuntu-latest
     timeout-minutes: 8
+    env:
+      ALPACA_API_KEY: "${{ secrets.ALPACA_API_KEY }}"
     defaults:
       run: { working-directory: ingest }
     steps:
@@ -28,3 +30,11 @@ jobs:
       - name: ingest
         env: { DATABASE_URL: "${{ secrets.DATABASE_URL }}" }
         run: python -m tmd.jobs.cli run intraday
+      - name: alpaca polling fallback (only if secrets are set)
+        if: ${{ env.ALPACA_API_KEY != '' }}
+        env:
+          DATABASE_URL: "${{ secrets.DATABASE_URL }}"
+          ALPACA_API_KEY: "${{ secrets.ALPACA_API_KEY }}"
+          ALPACA_API_SECRET: "${{ secrets.ALPACA_API_SECRET }}"
+          ALPACA_FEED: "${{ vars.ALPACA_FEED || 'iex' }}"
+        run: python -m tmd.jobs.cli run alpaca

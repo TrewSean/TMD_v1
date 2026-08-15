@@ -83,6 +83,7 @@ GROUPS: dict[str, list[str]] = {
         "fed_funds_futures",
     ],
     "intraday": ["yfinance"],
+    "alpaca": ["alpaca"],  # needs ALPACA_* secrets; polling fallback for the streaming worker
     "all": [
         "rba_f1",
         "rba_f2",
@@ -91,5 +92,6 @@ GROUPS: dict[str, list[str]] = {
         "asx_rate_tracker",
         "fed_funds_futures",
         "yfinance",
+        "alpaca",
     ],
 }

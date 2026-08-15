@@ -5,9 +5,9 @@ name: ci
 on:
   push:
     branches: [main]
-    paths: ["ingest/**", ".github/workflows/ci.yml"]
+    paths: ["ingest/**", "worker/**", ".github/workflows/ci.yml"]
   pull_request:
-    paths: ["ingest/**", ".github/workflows/ci.yml"]
+    paths: ["ingest/**", "worker/**", ".github/workflows/ci.yml"]
   workflow_dispatch:
 
 jobs:
@@ -38,3 +38,8 @@ jobs:
           python -m tmd.jobs.cli migrate
       - name: catalogue upserts and dry-run smoke (no network needed)
         run: python -m tmd.jobs.cli catalog | head -5
+      - name: worker lint and tests
+        working-directory: worker
+        run: |
+          pip install -e ".[dev]"
+          ruff check . && ruff format --check . && pytest

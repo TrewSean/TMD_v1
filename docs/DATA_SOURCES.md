@@ -9,6 +9,7 @@ delayed / unofficial. Verified = live dry-run succeeded from a real environment.
 | `rba_f2` | RBA, table F2 CSV | ACGB 2/3/5/10y, 10y indexed | daily ~16:30 Syd | primary | 15 Aug 2026 |
 | `ust_par` | US Treasury, daily par yield CSV | 1m to 30y par curve (13 tenors) | daily ~15:30 NY | primary | 15 Aug 2026 |
 | `nyfed_rates` | NY Fed markets API (JSON) | SOFR, EFFR (+ target range in meta) | daily 08:00 NY for T-1 | primary | 15 Aug 2026 |
+| `alpaca` + `worker/` | Alpaca Market Data (IEX or delayed SIP) | SPY QQQ DIA IWM TLT IEF GLD USO, NVDA AAPL MSFT AMD TSLA AVGO TSM; 1-min bars | streaming (worker) + polling fallback | feed | pending Sean's keys |
 | `yfinance` | Yahoo Finance via yfinance | ASX200, SPX, NDX, DJIA, VIX, AUDUSD, DXY, WTI, Brent, gold, copper, CBOE 5/10/30y | 10-20 min delayed | aggregator | 15 Aug 2026 (from GitHub Actions) |
 | `asx_rate_tracker` | ASX, RBA Rate Tracker data files | 30-day interbank futures implied yield strip (18 contracts), front settlement, ASX expected cash rate / change / probability | EOD, T-1 | primary | 15 Aug 2026 |
 | `fed_funds_futures` | CME via Yahoo (`ZQ<code><yy>.CBT`) | 30-day fed funds futures strip, 18 rolling contract months, prices | EOD, T-1 | aggregator | 15 Aug 2026 |
@@ -43,7 +44,6 @@ a measurement, and `validate.py` rejects anything more than two days in the futu
 |---|---|---|
 | `fred` | St Louis Fed | misc history, needs free key |
 | `abs_calendar`, `bls_bea_calendar` | publishers | release dates |
-| `alpaca` (worker) | Alpaca IEX feed | US equities/ETFs streaming, tier feed |
 
 ## Blocked, no machine-readable source (checked 15 Aug 2026)
 

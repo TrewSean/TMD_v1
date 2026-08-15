@@ -1,0 +1,20 @@
+# Fly.io config for the streaming worker. Deploy from the REPO ROOT:
+#   fly launch --no-deploy --copy-config --name tmd-worker   (first time, from repo root)
+#   fly secrets set DATABASE_URL=... ALPACA_API_KEY=... ALPACA_API_SECRET=... ALPACA_FEED=iex
+#   fly deploy --config worker/fly.toml --dockerfile worker/Dockerfile
+app = "tmd-worker"
+primary_region = "syd"
+
+[build]
+  dockerfile = "worker/Dockerfile"
+
+[processes]
+  worker = "tmd-worker"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "256mb"
+  processes = ["worker"]
+
+# No [http_service]: this is a background process, not a web server.
+# Fly keeps one machine running; auto-stop is off by default for non-http processes.

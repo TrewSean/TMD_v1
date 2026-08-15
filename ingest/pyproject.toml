@@ -13,6 +13,7 @@ dependencies = [
     "yfinance>=0.2.40",
     "pandas>=2.2",
     "numpy>=1.26",
+    "alpaca-py>=0.30",
     "typer>=0.12",
     "tenacity>=8.2",
 ]
