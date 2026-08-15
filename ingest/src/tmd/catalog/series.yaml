@@ -248,6 +248,29 @@ series:
     source_ref: effr
     tags: [policy, headline]
 
+  # ---------------------------------------------------------------- United States, CME 30-day fed funds futures (ZQ) via Yahoo
+  # Prices, not implied rates: 100 - price is arithmetic, and arithmetic lives in calcs/.
+  # Keyed by contract POSITION like the ASX strip above, because contracts roll monthly.
+  # meta.contract_ym / meta.symbol record which contract each number actually is.
+  - {id: us.cme.zq.m1,  name: "ZQ fed funds future, contract 1",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m1,  tags: [implied_path, headline]}
+  - {id: us.cme.zq.m2,  name: "ZQ fed funds future, contract 2",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m2,  tags: [implied_path]}
+  - {id: us.cme.zq.m3,  name: "ZQ fed funds future, contract 3",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m3,  tags: [implied_path]}
+  - {id: us.cme.zq.m4,  name: "ZQ fed funds future, contract 4",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m4,  tags: [implied_path]}
+  - {id: us.cme.zq.m5,  name: "ZQ fed funds future, contract 5",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m5,  tags: [implied_path]}
+  - {id: us.cme.zq.m6,  name: "ZQ fed funds future, contract 6",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m6,  tags: [implied_path]}
+  - {id: us.cme.zq.m7,  name: "ZQ fed funds future, contract 7",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m7,  tags: [implied_path]}
+  - {id: us.cme.zq.m8,  name: "ZQ fed funds future, contract 8",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m8,  tags: [implied_path]}
+  - {id: us.cme.zq.m9,  name: "ZQ fed funds future, contract 9",  unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m9,  tags: [implied_path]}
+  - {id: us.cme.zq.m10, name: "ZQ fed funds future, contract 10", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m10, tags: [implied_path]}
+  - {id: us.cme.zq.m11, name: "ZQ fed funds future, contract 11", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m11, tags: [implied_path]}
+  - {id: us.cme.zq.m12, name: "ZQ fed funds future, contract 12", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m12, tags: [implied_path]}
+  - {id: us.cme.zq.m13, name: "ZQ fed funds future, contract 13", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m13, tags: [implied_path]}
+  - {id: us.cme.zq.m14, name: "ZQ fed funds future, contract 14", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m14, tags: [implied_path]}
+  - {id: us.cme.zq.m15, name: "ZQ fed funds future, contract 15", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m15, tags: [implied_path]}
+  - {id: us.cme.zq.m16, name: "ZQ fed funds future, contract 16", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m16, tags: [implied_path]}
+  - {id: us.cme.zq.m17, name: "ZQ fed funds future, contract 17", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m17, tags: [implied_path]}
+  - {id: us.cme.zq.m18, name: "ZQ fed funds future, contract 18", unit: price, asset_class: rates, country: US, frequency: daily, tier: aggregator, source: fed_funds_futures, source_ref: m18, tags: [implied_path]}
+
   # ---------------------------------------------------------------- Yahoo Finance (delayed aggregator; equities, FX, commodities, futures)
   # These are Phase 1 tiles. Replace/augment US names with Alpaca (tier feed) later.
   - {id: au.asx200,        name: S&P/ASX 200,        unit: index, asset_class: equity,    country: AU, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "^AXJO",     tags: [headline]}

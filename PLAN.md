@@ -50,8 +50,11 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
       so the gap is latency only. Revisit if ASX ever publishes a rates CSV/JSON.
 - [ ] `fred`: FRED API for series without a cleaner primary (e.g. DXY history, breakevens).
       Needs a free API key -> `FRED_API_KEY` secret.
-- [ ] `fed_funds_futures`: CME ZQ strip via yfinance contract symbols (`ZQU26.CBT` ...)
-      with a rolling contract generator; tier aggregator, delayed
+- [x] `fed_funds_futures`: CME ZQ strip via yfinance contract symbols (15 Aug 2026).
+      Rolling generator builds `ZQ<code><yy>.CBT` for 18 months from the current CME
+      session month; 18 series keyed by position with `meta.contract_ym`/`symbol`.
+      Stores PRICES, not implied rates, since `100 - price` is arithmetic and belongs in
+      calcs. Live dry-run: 17/18 ok; Jan-28 is not yet quoted on Yahoo, left as a gap.
 - [ ] `au_bond_futures`: ASX 3yr/10yr bond futures (YT/XT) if any free delayed source is
       machine-readable; otherwise `[!]` blocked pending IBKR (Phase 4)
 - [ ] `abs_calendar`, `bls_bea_calendar`: release calendars into a `calendar_events`
