@@ -1,0 +1,40 @@
+# CI: lint + unit tests on every push and PR, plus a migration smoke test
+# against a throwaway Postgres. If this is red, do not merge.
+name: ci
+
+on:
+  push:
+    branches: [main]
+    paths: ["ingest/**", ".github/workflows/ci.yml"]
+  pull_request:
+    paths: ["ingest/**", ".github/workflows/ci.yml"]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults:
+      run: { working-directory: ingest }
+    services:
+      postgres:
+        image: postgres:16
+        env: { POSTGRES_USER: tmd, POSTGRES_PASSWORD: tmd, POSTGRES_DB: tmd }
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U tmd" --health-interval 5s --health-timeout 5s --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -e ".[dev]"
+      - name: lint
+        run: ruff check . && ruff format --check .
+      - name: unit tests
+        run: pytest
+      - name: migrations apply cleanly (twice = idempotent)
+        env: { DATABASE_URL: "postgresql://tmd:tmd@localhost:5432/tmd" }
+        run: |
+          python -m tmd.jobs.cli migrate
+          python -m tmd.jobs.cli migrate
+      - name: catalogue upserts and dry-run smoke (no network needed)
+        run: python -m tmd.jobs.cli catalog | head -5

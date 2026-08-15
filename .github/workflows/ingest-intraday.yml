@@ -1,0 +1,30 @@
+# Intraday snapshots (yfinance: indices, FX, commodities, CBOE yield indices).
+# Every 30 minutes on weekdays. GitHub cron can be delayed by several minutes
+# at busy times; the as_of timestamp on each row is the truth, not the cron.
+#
+# Budget note: private repos get 2,000 free Actions minutes/month. This schedule
+# uses roughly 1,500. Making the repo public makes Actions unlimited, or move
+# intraday polling to the always-on worker (see PLAN.md).
+name: ingest-intraday
+
+on:
+  schedule:
+    - cron: "*/30 * * * 1-5"
+  workflow_dispatch:
+
+concurrency: { group: ingest-intraday, cancel-in-progress: true }
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    defaults:
+      run: { working-directory: ingest }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -e .
+      - name: ingest
+        env: { DATABASE_URL: "${{ secrets.DATABASE_URL }}" }
+        run: python -m tmd.jobs.cli run intraday

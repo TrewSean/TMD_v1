@@ -1,0 +1,29 @@
+# secrets
+.env
+.env.*
+!.env.example
+*.pem
+# python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+build/
+dist/
+.venv/
+venv/
+# node
+node_modules/
+.next/
+out/
+.netlify/
+# os / editors
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+# local db / scratch
+*.db
+scratch/

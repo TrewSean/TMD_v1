@@ -1,0 +1,37 @@
+# Daily fixings from primary publishers (RBA F1/F2, US Treasury par, NY Fed SOFR/EFFR).
+# Times are UTC. Sydney = UTC+10/11, New York = UTC-4/-5.
+#   07:15 UTC  ~17:15 Sydney   after RBA publishes F1/F2 (~16:30 Sydney)
+#   13:30 UTC  ~09:30 New York after NY Fed publishes SOFR/EFFR (08:00 NY)
+#   21:30 UTC  ~17:30 New York after Treasury publishes par curve (~15:30 NY)
+name: ingest-fixings
+
+on:
+  schedule:
+    - cron: "15 7 * * 1-5"
+    - cron: "30 13 * * 1-5"
+    - cron: "30 21 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      target:
+        description: "adapter or group (default: fixings)"
+        default: fixings
+
+concurrency: { group: ingest-fixings, cancel-in-progress: false }
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+      run: { working-directory: ingest }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12", cache: pip }
+      - run: pip install -e .
+      - name: migrate (no-op when up to date)
+        env: { DATABASE_URL: "${{ secrets.DATABASE_URL }}" }
+        run: python -m tmd.jobs.cli migrate
+      - name: ingest
+        env: { DATABASE_URL: "${{ secrets.DATABASE_URL }}" }
+        run: python -m tmd.jobs.cli run "${{ github.event.inputs.target || 'fixings' }}"

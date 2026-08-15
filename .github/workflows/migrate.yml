@@ -1,0 +1,25 @@
+# Apply pending SQL migrations to the production database.
+# Runs automatically when a migration file lands on main, or by hand.
+name: migrate
+
+on:
+  push:
+    branches: [main]
+    paths: ["ingest/migrations/**"]
+  workflow_dispatch:
+
+concurrency: { group: migrate, cancel-in-progress: false }
+
+jobs:
+  migrate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    defaults:
+      run: { working-directory: ingest }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e .
+      - env: { DATABASE_URL: "${{ secrets.DATABASE_URL }}" }
+        run: python -m tmd.jobs.cli migrate

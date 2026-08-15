@@ -1,0 +1,200 @@
+# Series catalogue. The single source of truth for "what numbers exist".
+#
+# Rules
+#  * id is permanent. Never rename; deactivate (active: false) and add a new one.
+#  * id format: <country>.<publisher_or_market>.<thing>[.<tenor>]  all lower snake.
+#  * source must match a SourceAdapter.name in tmd/sources.
+#  * source_ref is whatever that adapter needs to find the value (ticker, column).
+#  * tier is about the SOURCE (primary publisher / licensed feed / aggregator),
+#    not about how much you like the number.
+#
+# The `defaults` block is merged into every entry that omits a key.
+
+defaults:
+  active: true
+  description: ""
+  tags: []
+
+series:
+
+  # ---------------------------------------------------------------- Australia, RBA table F1 (daily fixings)
+  - id: au.rba.cash_rate_target
+    name: RBA cash rate target
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: rba_f1
+    source_ref: FIRMMCRTD
+    tags: [policy, headline]
+  - id: au.rba.cash_rate_interbank
+    name: Interbank overnight cash rate (AONIA)
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: rba_f1
+    source_ref: FIRMMCRID
+  - id: au.bbsw.1m
+    name: 1m BBSW
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: rba_f1
+    source_ref: FIRMMBAB30D
+    description: EOD 1-month bank bill swap rate as published in RBA F1 (source ASX)
+  - id: au.bbsw.3m
+    name: 3m BBSW
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: rba_f1
+    source_ref: FIRMMBAB90D
+    tags: [headline]
+  - id: au.bbsw.6m
+    name: 6m BBSW
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: rba_f1
+    source_ref: FIRMMBAB180D
+  - id: au.ois.1m
+    name: 1m AUD OIS
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: rba_f1
+    source_ref: FIRMMOIS1D
+  - id: au.ois.3m
+    name: 3m AUD OIS
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: rba_f1
+    source_ref: FIRMMOIS3D
+  - id: au.ois.6m
+    name: 6m AUD OIS
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: rba_f1
+    source_ref: FIRMMOIS6D
+
+  # ---------------------------------------------------------------- Australia, RBA table F2 (ACGB yields)
+  - id: au.acgb.2y
+    name: ACGB 2yr yield
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: rba_f2
+    source_ref: FCMYGBAG2D
+    tags: [curve]
+  - id: au.acgb.3y
+    name: ACGB 3yr yield
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: rba_f2
+    source_ref: FCMYGBAG3D
+    tags: [curve, headline]
+  - id: au.acgb.5y
+    name: ACGB 5yr yield
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: rba_f2
+    source_ref: FCMYGBAG5D
+    tags: [curve]
+  - id: au.acgb.10y
+    name: ACGB 10yr yield
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: rba_f2
+    source_ref: FCMYGBAG10D
+    tags: [curve, headline]
+  - id: au.acgb.10y_indexed
+    name: ACGB 10yr indexed bond yield
+    unit: pct
+    asset_class: rates
+    country: AU
+    frequency: daily
+    tier: primary
+    source: rba_f2
+    source_ref: FCMYGBAGID
+
+  # ---------------------------------------------------------------- United States, Treasury par yield curve (daily)
+  - {id: us.ust.par.1m,  name: UST 1m par yield,  unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "1 Mo",  tags: [curve]}
+  - {id: us.ust.par.2m,  name: UST 2m par yield,  unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "2 Mo",  tags: [curve]}
+  - {id: us.ust.par.3m,  name: UST 3m par yield,  unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "3 Mo",  tags: [curve]}
+  - {id: us.ust.par.4m,  name: UST 4m par yield,  unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "4 Mo",  tags: [curve]}
+  - {id: us.ust.par.6m,  name: UST 6m par yield,  unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "6 Mo",  tags: [curve]}
+  - {id: us.ust.par.1y,  name: UST 1yr par yield, unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "1 Yr",  tags: [curve]}
+  - {id: us.ust.par.2y,  name: UST 2yr par yield, unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "2 Yr",  tags: [curve, headline]}
+  - {id: us.ust.par.3y,  name: UST 3yr par yield, unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "3 Yr",  tags: [curve]}
+  - {id: us.ust.par.5y,  name: UST 5yr par yield, unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "5 Yr",  tags: [curve]}
+  - {id: us.ust.par.7y,  name: UST 7yr par yield, unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "7 Yr",  tags: [curve]}
+  - {id: us.ust.par.10y, name: UST 10yr par yield, unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "10 Yr", tags: [curve, headline]}
+  - {id: us.ust.par.20y, name: UST 20yr par yield, unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "20 Yr", tags: [curve]}
+  - {id: us.ust.par.30y, name: UST 30yr par yield, unit: pct, asset_class: rates, country: US, frequency: daily, tier: primary, source: ust_par, source_ref: "30 Yr", tags: [curve]}
+
+  # ---------------------------------------------------------------- United States, NY Fed reference rates
+  - id: us.nyfed.sofr
+    name: SOFR
+    unit: pct
+    asset_class: rates
+    country: US
+    frequency: daily
+    tier: primary
+    source: nyfed_rates
+    source_ref: sofr
+    tags: [headline]
+  - id: us.nyfed.effr
+    name: Effective fed funds rate
+    unit: pct
+    asset_class: rates
+    country: US
+    frequency: daily
+    tier: primary
+    source: nyfed_rates
+    source_ref: effr
+    tags: [policy, headline]
+
+  # ---------------------------------------------------------------- Yahoo Finance (delayed aggregator; equities, FX, commodities, futures)
+  # These are Phase 1 tiles. Replace/augment US names with Alpaca (tier feed) later.
+  - {id: au.asx200,        name: S&P/ASX 200,        unit: index, asset_class: equity,    country: AU, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "^AXJO",     tags: [headline]}
+  - {id: us.spx,           name: S&P 500,            unit: index, asset_class: equity,    country: US, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "^GSPC",     tags: [headline]}
+  - {id: us.ndx,           name: Nasdaq 100,         unit: index, asset_class: equity,    country: US, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "^NDX"}
+  - {id: us.djia,          name: Dow Jones Industrial, unit: index, asset_class: equity,  country: US, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "^DJI"}
+  - {id: us.vix,           name: VIX,                unit: index, asset_class: equity,    country: US, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "^VIX"}
+  - {id: fx.audusd,        name: AUD/USD,            unit: price, asset_class: fx,        country: XX, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "AUDUSD=X", tags: [headline]}
+  - {id: fx.dxy,           name: US dollar index (DXY), unit: index, asset_class: fx,     country: US, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "DX-Y.NYB"}
+  - {id: cmd.wti,          name: WTI crude (front),  unit: usd_per_bbl, asset_class: commodity, country: XX, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "CL=F"}
+  - {id: cmd.brent,        name: Brent crude (front), unit: usd_per_bbl, asset_class: commodity, country: XX, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "BZ=F"}
+  - {id: cmd.gold,         name: Gold (front),       unit: usd_per_oz, asset_class: commodity, country: XX, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "GC=F"}
+  - {id: cmd.copper,       name: Copper (front),     unit: usd_per_lb, asset_class: commodity, country: XX, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "HG=F"}
+  - {id: us.ust.cboe.10y,  name: US 10yr yield (CBOE index), unit: pct, asset_class: rates, country: US, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "^TNX", description: "CBOE 10yr Treasury yield index; intraday proxy for the daily par yield"}
+  - {id: us.ust.cboe.5y,   name: US 5yr yield (CBOE index),  unit: pct, asset_class: rates, country: US, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "^FVX"}
+  - {id: us.ust.cboe.30y,  name: US 30yr yield (CBOE index), unit: pct, asset_class: rates, country: US, frequency: intraday, tier: aggregator, source: yfinance, source_ref: "^TYX"}
