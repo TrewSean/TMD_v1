@@ -1,8 +1,11 @@
-# Netlify: build the Next.js site in web/. The Next runtime (@netlify/plugin-nextjs)
-# is auto-detected for Next projects; publish dir is managed by it.
+# Netlify: build the Next.js site in web/ with the Netlify Next runtime.
 [build]
   base = "web"
   command = "npm ci && npm run build"
+  publish = ".next"
 
 [build.environment]
   NODE_VERSION = "22"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
