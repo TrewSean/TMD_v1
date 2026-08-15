@@ -60,7 +60,12 @@ model calls unless PLAN.md explicitly says a phase has been opened for it.
    items with a one-line reason.
 6. If a task turns out to be impossible or wrong, do not force it. Write what you found
    under "Open questions" in PLAN.md and move to the next task.
-7. Never push a red CI. Never merge your own PR into `main` if CI is failing.
+7. **Branch and PR, always.** Work on a branch named `feat/<thing>`, `fix/<thing>` or
+   `chore/<thing>`. Push it and open a pull request against `main` with a short summary and
+   the verification you ran. Merge only when CI is green. Never commit directly to `main`
+   except for trivial doc typos. `main` is what the scheduled jobs run, so it must always be
+   deployable.
+8. Never push a red CI. Never merge a PR into `main` if CI is failing.
 
 ## Adding a data source (the most common task)
 
