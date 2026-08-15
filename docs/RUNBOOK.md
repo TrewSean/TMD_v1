@@ -5,7 +5,7 @@
 | Secret | Used by | Where to get it |
 |---|---|---|
 | `DATABASE_URL` | all ingest workflows | Supabase → Project → Connect → "Session pooler" URI (port 5432). Replace `[YOUR-PASSWORD]`. |
-| `ALPACA_API_KEY`, `ALPACA_API_SECRET` | worker (Phase 1d) | Alpaca dashboard → API keys |
+| `ALPACA_API_KEY`, `ALPACA_API_SECRET` | `alpaca` adapter (Actions) and worker (Fly/Railway secrets) | Alpaca dashboard → API keys |
 | `FRED_API_KEY` | `fred` adapter (Phase 1b) | fred.stlouisfed.org → My Account → API keys |
 
 Never paste these into chat, code, or issues.
@@ -46,3 +46,10 @@ cp .env.example .env         # fill DATABASE_URL if you want real writes
 ruff check . && pytest
 python -m tmd.jobs.cli run fixings --dry-run
 ```
+
+## Streaming worker (Fly.io)
+
+See `worker/README.md`. Health: `select * from adapter_health where adapter='alpaca_stream'`
+should show a row no older than ~5 minutes while the process is up (US hours or not).
+`fly logs --config worker/fly.toml` for the live log. If it is down, the `alpaca` REST
+adapter on the intraday schedule keeps the same series topped up every 30 minutes.
