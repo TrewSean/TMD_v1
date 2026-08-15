@@ -1,0 +1,77 @@
+# Central bank policy meeting dates.
+#
+# This is VERSIONED CONFIG, not a data source. Both banks publish their schedules only
+# as HTML tables (no CSV, JSON or iCal anywhere; the RSS feeds carry past releases, and
+# the NY Fed markets API has no FOMC endpoint). Per CLAUDE.md, small slow-moving
+# reference data that publishers only put in HTML belongs here, transcribed once and
+# reviewed yearly. We do not scrape it, and these dates are not Observations:
+# `validate.py` rejects any observation more than two days in the future, which is
+# correct, because a scheduled date is not a measurement.
+#
+# Sources, transcribed 15 Aug 2026:
+#   RBA  https://www.rba.gov.au/schedules-events/board-meeting-schedules.html
+#   FOMC https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm
+#
+# Conventions
+#   decision  : the day the decision is announced. Both banks meet over two days and
+#               announce on the SECOND day, so this is always day 2 of the published
+#               range ("28-29 September" -> 29 September).
+#   effective : the first day the new rate applies, always the day after the decision.
+#               RBA decisions land on a Tuesday and take effect Wednesday; FOMC
+#               decisions land on a Wednesday and take effect Thursday. Every effective
+#               date below is therefore a business day. `tests/test_catalog_meetings.py`
+#               asserts those weekdays, so a mistyped date fails CI rather than quietly
+#               shifting an implied path.
+#   projections: FOMC meetings marked "*" on the Fed's calendar, which carry a Summary
+#               of Economic Projections. Informational only.
+#
+# Covers the remainder of 2026 and all of 2027. REVIEW WHEN: the RBA publishes its 2028
+# schedule (usually mid-2027) and the Fed publishes its 2028 tentative calendar (usually
+# announced with the June FOMC). An empty forward calendar is not silently tolerated:
+# `upcoming()` returning nothing is what the derive job reports as an error.
+
+banks:
+
+  - id: rba
+    name: Reserve Bank of Australia, Monetary Policy Board
+    country: AU
+    rate_series: au.rba.cash_rate_target
+    source_url: https://www.rba.gov.au/schedules-events/board-meeting-schedules.html
+    reviewed: 2026-08-15
+    decision_weekday: 1   # Tuesday (Mon=0), asserted by tests
+    meetings:
+      # 2026
+      - {decision: 2026-09-29, effective: 2026-09-30}
+      - {decision: 2026-11-03, effective: 2026-11-04}
+      - {decision: 2026-12-08, effective: 2026-12-09}
+      # 2027
+      - {decision: 2027-02-09, effective: 2027-02-10}
+      - {decision: 2027-03-23, effective: 2027-03-24}
+      - {decision: 2027-05-04, effective: 2027-05-05}
+      - {decision: 2027-06-22, effective: 2027-06-23}
+      - {decision: 2027-08-10, effective: 2027-08-11}
+      - {decision: 2027-09-28, effective: 2027-09-29}
+      - {decision: 2027-11-02, effective: 2027-11-03}
+      - {decision: 2027-12-14, effective: 2027-12-15}
+
+  - id: fomc
+    name: Federal Open Market Committee
+    country: US
+    rate_series: us.nyfed.effr
+    source_url: https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm
+    reviewed: 2026-08-15
+    decision_weekday: 2   # Wednesday (Mon=0), asserted by tests
+    meetings:
+      # 2026
+      - {decision: 2026-09-16, effective: 2026-09-17, projections: true}
+      - {decision: 2026-10-28, effective: 2026-10-29}
+      - {decision: 2026-12-09, effective: 2026-12-10, projections: true}
+      # 2027, tentative until confirmed at the meeting before each
+      - {decision: 2027-01-27, effective: 2027-01-28}
+      - {decision: 2027-03-17, effective: 2027-03-18, projections: true}
+      - {decision: 2027-04-28, effective: 2027-04-29}
+      - {decision: 2027-06-09, effective: 2027-06-10, projections: true}
+      - {decision: 2027-07-28, effective: 2027-07-29}
+      - {decision: 2027-09-15, effective: 2027-09-16, projections: true}
+      - {decision: 2027-10-27, effective: 2027-10-28}
+      - {decision: 2027-12-08, effective: 2027-12-09, projections: true}

@@ -56,13 +56,14 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
       machine-readable; otherwise `[!]` blocked pending IBKR (Phase 4)
 - [ ] `abs_calendar`, `bls_bea_calendar`: release calendars into a `calendar_events`
       table (new migration `0003_calendar.sql`)
-- [ ] `rba_calendar`, `fomc_calendar`: meeting dates as versioned config
-      `catalog/meetings.yaml` (decision date, effective date, country), loader + tests,
-      reviewed yearly. Reason: both banks publish dates only as HTML (RBA board schedule
-      page, federalreserve.gov FOMC calendar; no CSV/JSON/iCal, RSS is past releases only,
-      NY Fed API has no FOMC endpoint). Scraping is wrong, config is right. Unblocks
-      `calcs/implied_path.py` wiring. Note: `validate.py` rejects observations >2 days in
-      the future, so scheduled dates are config/`calendar_events`, never Observations.
+- [x] `rba_calendar`, `fomc_calendar`: meeting dates as versioned config
+      `catalog/meetings.yaml` + `catalog/meetings.py` loader (15 Aug 2026). RBA and FOMC
+      decision/effective dates for the rest of 2026 and all of 2027, transcribed from the
+      two published schedules (URLs in the file header). The loader raises `MeetingsError`
+      on out-of-order dates, effective <= decision, duplicates, or a decision on the wrong
+      weekday, so a transcription slip fails CI instead of shifting an implied path.
+      REVIEW YEARLY: extend when the RBA publishes 2028 (mid-2027) and the Fed publishes
+      its 2028 tentative calendar (usually with the June FOMC).
 - [ ] Optional cross-check later: FRED `fred/release/dates` API can confirm FOMC dates once
       the `fred` adapter exists.
 
