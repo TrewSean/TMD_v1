@@ -36,9 +36,18 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
       intraday cadence. Reason: private repos get 2,000 min/month; current schedule ~1,500.
 
 ### 1b. Remaining primary sources
-- [ ] `asx_rate_tracker`: ASX 30-day interbank cash rate futures implied RBA path
-      (EOD, from ASX's published data; check for a JSON/CSV endpoint before scraping)
-- [ ] `asx_bbsw`: ASX BBSW daily file (cross-check vs RBA F1 which lags a day)
+- [x] `asx_rate_tracker`: ASX 30-day interbank cash rate futures implied RBA path
+      (15 Aug 2026). Three published files under `/content/dam/asx/data/`
+      (`yield_curve`, `dynamic_text`, `market_exp`), named `.csv` and served as
+      `text/csv` but with JSON bodies. 22 series: the 18-contract implied yield strip
+      stored by contract position, plus front settlement, ASX expected cash rate,
+      expected change, and probability of a move. Live dry-run: 36 obs, status ok.
+- [!] `asx_bbsw`: BLOCKED, no machine-readable rate file. ASX publishes the 10-day BBSW
+      history only as a PDF (`/data/benchmarks/bbsw-10-day-rolling-history.pdf`); the
+      only xlsx (`asx-interbank-bbsw-daily-volume-report.xlsx`) is *volumes*, not rates;
+      live rates sit behind a paid ASX benchmark subscription. Not scraping the PDF.
+      BBSW 1/3/6m already arrive via `rba_f1` at primary tier, one business day late,
+      so the gap is latency only. Revisit if ASX ever publishes a rates CSV/JSON.
 - [ ] `fred`: FRED API for series without a cleaner primary (e.g. DXY history, breakevens).
       Needs a free API key -> `FRED_API_KEY` secret.
 - [ ] `fed_funds_futures`: CME ZQ strip via yfinance contract symbols (`ZQU26.CBT` ...)
@@ -47,7 +56,20 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
       machine-readable; otherwise `[!]` blocked pending IBKR (Phase 4)
 - [ ] `abs_calendar`, `bls_bea_calendar`: release calendars into a `calendar_events`
       table (new migration `0003_calendar.sql`)
-- [ ] `rba_calendar`, `fomc_calendar`: meeting dates (needed by implied path calc)
+- [!] `rba_calendar`: BLOCKED, HTML only. Meeting dates live in a `<table>` on
+      `rba.gov.au/schedules-events/board-meeting-schedules.html` (and the yearly calendar
+      page). No CSV, JSON or iCal anywhere on rba.gov.au; the RSS feeds carry past media
+      releases, not the forward schedule. Not scraping the table.
+- [!] `fomc_calendar`: BLOCKED, HTML only. `federalreserve.gov/monetarypolicy/fomccalendars.htm`
+      has no CSV/JSON/iCal counterpart; every feed under `/feeds/` is past press releases,
+      and the NY Fed markets API (already used by `nyfed_rates`) has no FOMC endpoint.
+- [ ] Revisit the two blocked calendars once `fred` lands: the FRED releases API
+      (`fred/release/dates`) is machine-readable and would cover FOMC dates with the same
+      key. Reason: it is the only official-adjacent structured source found.
+- [ ] Decide how meeting dates get stored at all before rebuilding either calendar
+      adapter. Reason: `validate.py` rejects any observation more than 2 days in the
+      future, so a *scheduled* date cannot be an Observation; it needs the
+      `calendar_events` table and a `fetch_events()` hook on `SourceAdapter`.
 
 ### 1c. Calcs
 - [ ] `calcs/implied_path.py`: meeting-by-meeting implied policy rate from a futures
@@ -85,4 +107,17 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
 ## Open questions
 - (resolved 15 Aug) Yahoo works from GitHub runners with batched `yf.download`; per-ticker
   `fast_info` returned nothing. Keep the adapter batched.
-- ASX Rate Tracker: is there a stable machine-readable endpoint, or only the HTML page?
+- (resolved 15 Aug) ASX Rate Tracker: yes, there is a machine-readable endpoint. The page
+  is a widget fed by `https://www.asx.com.au/content/dam/asx/data/{yield_curve,dynamic_text,
+  market_exp}.csv`. They are JSON despite the `.csv` name and the `text/csv` header, so the
+  adapter reads text and `json.loads`. If ASX ever makes the extension honest, the adapter
+  raises at the parse rather than storing nonsense.
+- `asx_rate_tracker` catalogues 18 strip contracts because that is what ASX lists today. If
+  ASX ever lists a 19th, position `m19` is not in the catalogue, so the runner records a
+  "not in catalogue" note and marks the run `partial` rather than dropping it silently.
+  Watch `ingest_runs.notes` for that; the fix is one more catalogue line.
+- ASX's `Ftre_Cash_Rate_Change` (-0.25) and `Prob_Change` (0 for all 15 days) disagree with
+  each other in the 13 Aug file. We store both verbatim, as published, and do no arithmetic
+  in the adapter. Worth understanding what ASX means by each before either is put on a tile.
+- Both meeting calendars are blocked on format, not on effort. If a licensed calendar feed
+  ever gets added, the `calendar_events` table is the prerequisite (see 1b).

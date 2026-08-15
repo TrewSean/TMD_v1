@@ -1,0 +1,78 @@
+{
+  "Crnt_Stlmnt_Dt": "2026-08-13",
+  "RBA_Trgt_Cash_Rate": 4.35,
+  "months": [
+    {
+      "Expiry_Month": "Aug-26",
+      "Implied_Yield": 4.345
+    },
+    {
+      "Expiry_Month": "Sep-26",
+      "Implied_Yield": 4.35
+    },
+    {
+      "Expiry_Month": "Oct-26",
+      "Implied_Yield": 4.38
+    },
+    {
+      "Expiry_Month": "Nov-26",
+      "Implied_Yield": 4.46
+    },
+    {
+      "Expiry_Month": "Dec-26",
+      "Implied_Yield": 4.475
+    },
+    {
+      "Expiry_Month": "Jan-27",
+      "Implied_Yield": 4.49
+    },
+    {
+      "Expiry_Month": "Feb-27",
+      "Implied_Yield": 4.505
+    },
+    {
+      "Expiry_Month": "Mar-27",
+      "Implied_Yield": 4.51
+    },
+    {
+      "Expiry_Month": "Apr-27",
+      "Implied_Yield": 4.51
+    },
+    {
+      "Expiry_Month": "May-27",
+      "Implied_Yield": 4.48
+    },
+    {
+      "Expiry_Month": "Jun-27",
+      "Implied_Yield": 4.485
+    },
+    {
+      "Expiry_Month": "Jul-27",
+      "Implied_Yield": 4.48
+    },
+    {
+      "Expiry_Month": "Aug-27",
+      "Implied_Yield": 4.47
+    },
+    {
+      "Expiry_Month": "Sep-27",
+      "Implied_Yield": 4.455
+    },
+    {
+      "Expiry_Month": "Oct-27",
+      "Implied_Yield": 4.435
+    },
+    {
+      "Expiry_Month": "Nov-27",
+      "Implied_Yield": 4.41
+    },
+    {
+      "Expiry_Month": "Dec-27",
+      "Implied_Yield": 4.395
+    },
+    {
+      "Expiry_Month": "Jan-28",
+      "Implied_Yield": 4.38
+    }
+  ]
+}

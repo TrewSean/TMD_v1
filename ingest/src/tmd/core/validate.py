@@ -14,6 +14,7 @@ from tmd.core.models import Observation, Series
 # Plausible bounds per unit. Widen deliberately if a real value trips them.
 BOUNDS: dict[str, tuple[Decimal, Decimal]] = {
     "pct": (Decimal("-5"), Decimal("50")),
+    "pct_prob": (Decimal("0"), Decimal("100")),  # a probability, not a rate
     "bp": (Decimal("-2000"), Decimal("5000")),
     "index": (Decimal("0"), Decimal("1000000")),
     "price": (Decimal("0"), Decimal("1000000")),
