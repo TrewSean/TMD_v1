@@ -13,6 +13,20 @@ delayed / unofficial. Verified = live dry-run succeeded from a real environment.
 | `asx_rate_tracker` | ASX, RBA Rate Tracker data files | 30-day interbank futures implied yield strip (18 contracts), front settlement, ASX expected cash rate / change / probability | EOD, T-1 | primary | 15 Aug 2026 |
 | `fed_funds_futures` | CME via Yahoo (`ZQ<code><yy>.CBT`) | 30-day fed funds futures strip, 18 rolling contract months, prices | EOD, T-1 | aggregator | 15 Aug 2026 |
 
+## Derived, not fetched
+
+| Series | Computed by | From | Tier |
+|---|---|---|---|
+| `au.rba.implied.n1..n12` | `tmd derive` -> `calcs/implied_path.py` | ASX IB strip + AONIA + `meetings.yaml` | primary |
+| `us.fed.implied.n1..n12` | `tmd derive` -> `calcs/implied_path.py` | ZQ strip + EFFR + `meetings.yaml` | aggregator |
+
+Keyed by meeting *position* (`n1` = after the next meeting), because series ids are
+permanent and meetings roll. `meta` carries `meeting_date`, `effective_date`, `step_bp`,
+`change_from_current_bp`, `cumulative_moves`, `weight`, `weak` and the whole-fit
+`fit_rms_bp`. Tier follows the weakest input, which is why the Fed path is `aggregator`.
+Runs as a `derive` step after `ingest` in the `ingest-fixings` workflow, and records into
+`ingest_runs` as `derive_rba` / `derive_fed` so `adapter_health` covers it too.
+
 ## Reference config, not a source
 
 | File | What | Review |

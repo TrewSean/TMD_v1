@@ -76,9 +76,24 @@ Legend: `[ ]` todo, `[x]` done, `[~]` in progress, `[!]` blocked (say why).
       weak-node flag, realised front-month days). Exact on synthetic strips. (15 Aug)
 - [x] `calcs/changes.py`: 1d / 1w / 1m / 3m / 1y / YTD changes, bp for rates, % otherwise (15 Aug)
 - [x] `calcs/curves.py`: `interpolate_missing` linear-in-years, flagged, no extrapolation (15 Aug)
-- [ ] Wire calcs into a scheduled job that writes derived series (e.g. `au.rba.implied.<meeting>`,
-      `us.fed.implied.<meeting>`, `*.chg_1d`) once `asx_rate_tracker`, `fed_funds_futures`,
-      `rba_calendar` and `fomc_calendar` adapters exist (depends on 1b).
+- [x] Wire `implied_path` into a job: `tmd derive` + `jobs/derive.py` (15 Aug 2026). Reads
+      the ASX and ZQ strips and the reference rate from the store, plus `meetings.yaml`,
+      and writes `au.rba.implied.n1..n12` (primary) and `us.fed.implied.n1..n12`
+      (aggregator, tier follows the weakest input). Nodes are keyed by MEETING POSITION,
+      not meeting date, so ids stay permanent; the meeting is in meta alongside
+      `fit_rms_bp`, `weak`, `weight`, `step_bp` and `cumulative_moves`. Added as a
+      `derive` step after `ingest` in the `ingest-fixings` workflow.
+      Verified end to end on live data (adapters -> MemoryStore -> derive): RBA 11 nodes,
+      fit RMS 0.28bp; Fed 11 nodes, fit RMS 0.07bp; no weak nodes.
+- [ ] Verify `tmd derive` against the real Postgres store. Reason: it was proved against
+      a MemoryStore filled from live adapters, but no `DATABASE_URL` was reachable from
+      the dev environment, so the psycopg read path is untested. Run the `ingest-fixings`
+      workflow by hand and check `au.rba.implied.n1` in `latest_observations`.
+- [ ] Wire `calcs/changes.py` the same way (`*.chg_1d` and friends). Reason: `tmd derive`
+      currently only computes implied paths; changes are still unused by any job.
+- [ ] Consider a batched `Store.latest_many()`. Reason: `derive` issues one `latest()`
+      query per strip position, ~40 round trips per run, each opening its own connection.
+      Fine once a day, wasteful if derive ever runs per-tick.
 
 ### 1d. Streaming worker (Alpaca)
 - [ ] `worker/`: Python process using `alpaca-py` websocket (IEX feed) for a configured
