@@ -55,3 +55,34 @@ def slope_bp(points: dict[str, Decimal], short: str = "2y", long: str = "10y") -
 def cross_curve_spreads(au: dict[str, Decimal], us: dict[str, Decimal]) -> dict[str, Decimal]:
     """AU minus US at every tenor both curves have, in bp."""
     return {t: spread_bp(au[t], us[t]) for t in au if t in us}
+
+
+def interpolate_missing(
+    points: dict[str, Decimal], wanted: list[str]
+) -> dict[str, tuple[Decimal, bool]]:
+    """Fill requested tenors by linear interpolation in maturity-years space.
+
+    Returns {tenor: (yield, interpolated_flag)}. Tenors outside the observed range are
+    NOT extrapolated and are omitted. Observed tenors pass through with flag False.
+    Linear-in-years is deliberately simple; it is for display continuity, not pricing.
+    """
+    known = sort_curve(points)
+    if not known:
+        return {}
+    xs = [TENOR_YEARS[t] for t, _ in known]
+    ys = [v for _, v in known]
+    out: dict[str, tuple[Decimal, bool]] = {}
+    for t in wanted:
+        if t in points:
+            out[t] = (points[t], False)
+            continue
+        x = TENOR_YEARS.get(t)
+        if x is None or x < xs[0] or x > xs[-1]:
+            continue
+        for i in range(len(xs) - 1):
+            x0, y0, x1, y1 = xs[i], ys[i], xs[i + 1], ys[i + 1]
+            if x0 <= x <= x1:
+                frac = Decimal(str((x - x0) / (x1 - x0)))
+                out[t] = ((y0 + (y1 - y0) * frac).quantize(Decimal("0.001")), True)
+                break
+    return out

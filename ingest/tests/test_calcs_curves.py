@@ -27,3 +27,15 @@ def test_cross_curve():
     us = {"2y": Decimal("4.25"), "10y": Decimal("4.70"), "30y": Decimal("5.23")}
     assert cross_curve_spreads(au, us) == {"2y": Decimal("34.0"), "10y": Decimal("27.0")}
     assert spread_bp(Decimal("4.70"), Decimal("4.25")) == Decimal("45.0")
+
+
+def test_interpolate_missing_flags_and_no_extrapolation():
+    from tmd.calcs.curves import interpolate_missing
+
+    au = {"10y": Decimal("5.00"), "20y": Decimal("5.40")}
+    got = interpolate_missing(au, ["10y", "15y", "20y", "30y"])
+    assert got["10y"] == (Decimal("5.00"), False)
+    assert got["15y"] == (Decimal("5.200"), True)
+    assert got["20y"] == (Decimal("5.40"), False)
+    assert "30y" not in got  # beyond observed range, not extrapolated
+    assert interpolate_missing({}, ["2y"]) == {}
