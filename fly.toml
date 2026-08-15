@@ -1,7 +1,9 @@
-# Fly.io config for the streaming worker. Deploy from the REPO ROOT:
-#   fly launch --no-deploy --copy-config --name tmd-worker   (first time, from repo root)
+# Fly.io config for the streaming worker (worker/). Lives at the REPO ROOT because Fly
+# uses the config file's directory as the build context and worker/Dockerfile needs to
+# COPY both ingest/ and worker/. Deploy from the repo root:
+#   fly launch --no-deploy --copy-config --name tmd-worker --region syd   (first time)
 #   fly secrets set DATABASE_URL=... ALPACA_API_KEY=... ALPACA_API_SECRET=... ALPACA_FEED=iex
-#   fly deploy --config worker/fly.toml --dockerfile worker/Dockerfile
+#   fly deploy
 app = "tmd-worker"
 primary_region = "syd"
 

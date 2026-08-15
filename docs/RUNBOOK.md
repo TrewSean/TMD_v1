@@ -51,5 +51,5 @@ python -m tmd.jobs.cli run fixings --dry-run
 
 See `worker/README.md`. Health: `select * from adapter_health where adapter='alpaca_stream'`
 should show a row no older than ~5 minutes while the process is up (US hours or not).
-`fly logs --config worker/fly.toml` for the live log. If it is down, the `alpaca` REST
+`fly logs` from the repo root for the live log (fly.toml lives at the root). If it is down, the `alpaca` REST
 adapter on the intraday schedule keeps the same series topped up every 30 minutes.

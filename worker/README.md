@@ -23,11 +23,11 @@ Off US market hours nothing arrives; that is normal. Ctrl+C flushes and exits.
 From the repo root:
 
 ```
-fly auth signup            # or fly auth login
-fly launch --no-deploy --copy-config --config worker/fly.toml --name tmd-worker --region syd
-fly secrets set --config worker/fly.toml DATABASE_URL="..." ALPACA_API_KEY="..." ALPACA_API_SECRET="..." ALPACA_FEED=iex
-fly deploy --config worker/fly.toml
-fly logs --config worker/fly.toml
+fly auth login
+fly launch --no-deploy --copy-config --name tmd-worker --region syd   # fly.toml is at the repo root
+fly secrets set DATABASE_URL="..." ALPACA_API_KEY="..." ALPACA_API_SECRET="..." ALPACA_FEED=iex
+fly deploy
+fly logs
 ```
 
 Railway alternative: new project from the GitHub repo, set the root to the repo, it picks
